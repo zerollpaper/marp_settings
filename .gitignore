@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/
+package-lock.json
+*.html
+*.pdf
+
+# 自分の発表はここに置く（公開リポジトリには含めない）
+talks/

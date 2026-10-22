@@ -1,0 +1,13 @@
+{
+  "name": "marp_settings",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Marp workspace with a shared seminar theme, per-talk folders, and AI agent rules",
+  "license": "MIT",
+  "scripts": {
+    "new": "node scripts/new-project.cjs"
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "latest"
+  }
+}

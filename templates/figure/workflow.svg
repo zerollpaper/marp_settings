@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" font-family="Helvetica, Arial, sans-serif">
+  <rect width="640" height="360" fill="#FFFFFF"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#434343"/>
+    </marker>
+  </defs>
+  <g stroke="#2C67E5" stroke-width="3" fill="#F3F3F3">
+    <rect x="30" y="130" width="160" height="100" rx="14"/>
+    <rect x="240" y="130" width="160" height="100" rx="14"/>
+    <rect x="450" y="130" width="160" height="100" rx="14"/>
+  </g>
+  <g fill="#000000" font-size="26" text-anchor="middle">
+    <text x="110" y="175">slide.md</text>
+    <text x="320" y="175">Marp</text>
+    <text x="530" y="175">PDF / HTML</text>
+  </g>
+  <g fill="#595959" font-size="18" text-anchor="middle">
+    <text x="110" y="205">content + notes</text>
+    <text x="320" y="205">seminar theme</text>
+    <text x="530" y="205">to present</text>
+  </g>
+  <g stroke="#434343" stroke-width="3" marker-end="url(#arrow)">
+    <line x1="195" y1="180" x2="234" y2="180"/>
+    <line x1="405" y1="180" x2="444" y2="180"/>
+  </g>
+</svg>
