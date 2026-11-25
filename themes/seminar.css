@@ -249,7 +249,7 @@ table {
             background-color: var(--bg-accent);
             color: var(--gray-medium);
             border: 1.3px solid var(--border-color);
-            font-weight: 400;
+            font-weight: 600;
         }
     }
 
@@ -295,28 +295,21 @@ section {
         padding: 30px 60px 0 60px;
     }
 
-    &:not(.no-header):not(.title):not(.section)>h1:first-child {
-        position: absolute;
-        width: 100%;
-        top: 0;
-        left: 0;
-        height: 80px;
-        display: flex;
-        align-items: center;
-        padding-left: 40px;
-        color: var(--gray-medium);
-        margin: 0;
+    &:not(.no-header):not(.title):not(.section):has(> h1:first-child) {
+        padding-top: 0;
+    }
 
-        &::after {
-            content: "";
-            position: absolute;
-            top: 80px;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background-color: var(--black);
-            z-index: 100;
-        }
+    &:not(.no-header):not(.title):not(.section)>h1:first-child {
+        /* Keep inline emphasis and math in the title's normal text flow. */
+        box-sizing: border-box;
+        flex: none;
+        align-content: center;
+        min-height: 81px;
+        padding: 12px 40px;
+        margin: 0 -60px 19px;
+        text-wrap: balance;
+        border-bottom: 1px solid var(--black);
+        color: var(--gray-medium);
     }
 
     &::after {
@@ -391,6 +384,17 @@ footer {
     max-width: 60%;
 }
 
+/* 日本語の句読点・小書き仮名の禁則と、複数行の見出しの行間 */
+section:lang(ja) {
+    line-break: strict;
+}
+
+section:lang(ja) h1 {
+    line-height: 1.28;
+    word-break: auto-phrase;
+    text-wrap: balance;
+}
+
 /* 3. 2段組：比率と間隔 */
 
 .two-col-block {
@@ -437,7 +441,11 @@ section .source {
   position: absolute;
   bottom: 16px;
   right: 32px;
-  font-size: 14px;
+  max-width: calc(100% - 120px);
+  font-size: 17px;
+  line-height: 1.3;
+  text-align: right;
+  overflow-wrap: anywhere;
 }
 
 section .source, section .source * {
@@ -456,6 +464,10 @@ section.title.cover {
 section.title.cover h1 {
   font-size: 51px;
   line-height: 1.13;
+}
+
+section.title.cover:lang(ja) h1 {
+  line-height: 1.28;
 }
 
 section.title.cover h2 {
