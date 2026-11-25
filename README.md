@@ -79,6 +79,23 @@ AIに頼む場合の例：
 > `AGENTS.md` を読んで、`seminar_2027_ss` という新しい発表フォルダを作って。
 > 共通テーマを使い、英語スライド・英語原稿・日本語ノートで準備して。
 
+### 研究プロジェクト内に発表を作る
+
+研究プロジェクトのルートから、取得した共通リポジトリのスクリプトに `--workspace .` を付けます。最初に共通リポジトリで `npm install` を実行してください。研究側に npm パッケージを入れる必要はありません。
+
+```sh
+# 研究プロジェクトをカレントディレクトリにして実行
+node /path/to/marp/scripts/new-project.cjs convergence --workspace .
+cd slides/convergence
+marp slide.md --pdf
+```
+
+`slides/convergence/` に公開テンプレートから原稿と図を作ります。個人用の `talks/template.md` は従来の `talks/` 用です。既存の発表名で再実行すると作成を中止します。
+
+VS Code は研究プロジェクトのルート、または発表フォルダを開き、`slide.md` を開き、コマンドパレットから **Markdown: プレビューを横に表示** を選びます。Markdown Preview Enhanced を併用している環境でもこのコマンドで Marp が動きます。生成時に各フォルダの `.vscode/seminar.css` を共通 CSS へのシンボリックリンクとして作り、拡張が読めるワークスペース内のパスを登録します。Windows ではファイルのシンボリックリンクを作れる環境が必要です。研究側の既存テーマ・ほかの設定・コメントは保持し、HTML の設定は共通レイアウト用の `all` にします。後からチェックアウト先を移す場合は、両者の相対配置を保つか、CLI の参照先とテーマのリンク先を更新してください。
+
+CLI を共通リポジトリだけにインストールした場合は、発表フォルダから `/path/to/marp/node_modules/.bin/marp slide.md --pdf` を使えます。研究プロジェクト側で管理するのは発表とその設定です。CSS の編集先は共通の `themes/seminar.css` です。
+
 ### 自分の名前・研究室を毎回入れたくない
 
 `talks/template.md` に自分用のひな形（名前・研究室入り、不要な見本ページを削ったものなど）を置いておくと、
@@ -186,7 +203,7 @@ cd talks/seminar_2027_ss
 
 今回だけの例外が必要なときは、発表フォルダに `theme.css` を追加します。
 固有のテーマ名（`/* @theme my-talk */`）を付けて `@import "seminar";` し、原稿の `theme:` と、直下・発表フォルダ両方の `.vscode/settings.json` に登録します。
-CLIは `talks/*/theme.css` を自動で登録します。
+CLIは従来のワークスペースでは `talks/*/theme.css`、外部の発表フォルダで実行するときはそのフォルダの `theme.css` を登録します。
 
 ---
 
@@ -213,7 +230,7 @@ marp/
         └── .vscode/settings.json  発表フォルダだけを開いたときのテーマ登録
 ```
 
-発表フォルダの `marp.config.cjs` は次の1行だけです。
+従来の `talks/<発表名>/marp.config.cjs` の例です。外部の発表では生成時に参照先を計算します。
 
 ```js
 module.exports = require('../../marp.config.cjs');
@@ -223,7 +240,7 @@ Marp CLIは親フォルダの設定を自動では探さないため、この参
 発表フォルダ内で普通に `marp slide.md` と打てるようにしています。設定内容は直下に集約されているので二重管理にはなりません。
 
 VS Code側も同様で、直下を開いても発表フォルダだけを開いてもテーマが効くよう、両方に `.vscode/settings.json` があります。
-どちらも新規作成スクリプトが自動で用意するので、普段は触りません。
+新しい発表ではスクリプトが発表側の設定とテーマのリンクを用意します。以前の発表に `../../themes/seminar.css` という設定がある場合は、共通リポジトリのルートを開くとプレビューできます。
 
 ### AI向けルール（AGENTS.md と CLAUDE.md）
 
@@ -238,7 +255,7 @@ VS Code側も同様で、直下を開いても発表フォルダだけを開い�
 
 - **テーマが効かない（VS Code）**：フォルダを「信頼」したか、開いているフォルダの `.vscode/settings.json` にテーマが登録されているか確認。
 - **2段組などのHTMLが崩れる**：`markdown.marp.html` が `all` になっているか、HTMLとMarkdownの間に空行があるか確認。
-- **テーマが効かない（CLI）**：発表フォルダに `marp.config.cjs` があり、`../../marp.config.cjs` を参照しているか確認。
+- **テーマが効かない（CLI）**：発表フォルダに `marp.config.cjs` があり、共通リポジトリの `marp.config.cjs` を参照しているか確認。
 - **原稿**：冒頭が `marp: true`、`theme: seminar` になっているか確認。
 - **PDF出力でブラウザが見つからない**：Chrome / Edge / Firefox のいずれかを入れる。
 - **フォント**：macOSはSF Pro／ヒラギノ、WindowsはSegoe UI／游ゴシック／メイリオで表示されます。

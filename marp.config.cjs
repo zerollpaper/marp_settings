@@ -14,9 +14,20 @@ const projectThemes = PROJECT_ROOTS
     .map(entry => path.join(dir, entry.name, 'theme.css')))
   .filter(file => fs.existsSync(file));
 
-module.exports = {
-  themeSet: [path.join(__dirname, 'themes', 'seminar.css'), ...projectThemes],
-  html: true,
-  allowLocalFiles: true,
-  imageScale: 2,
-};
+function configuration(projectThemes) {
+  return {
+    themeSet: [path.join(__dirname, 'themes', 'seminar.css'), ...projectThemes],
+    html: true,
+    allowLocalFiles: true,
+    imageScale: 2,
+  };
+}
+
+module.exports = configuration(projectThemes);
+// Provide an external deck's config without exposing a new option to Marp CLI.
+Object.defineProperty(module.exports, 'forDeck', {
+  value(dir) {
+    const theme = path.join(dir, 'theme.css');
+    return configuration(fs.existsSync(theme) ? [theme] : []);
+  },
+});

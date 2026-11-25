@@ -1,43 +1,71 @@
-// Usage: node scripts/new-project.cjs <project-name>
-// Creates talks/<project-name>/ with slide.md, figure/, and the CLI / VS Code settings.
+// Usage: node scripts/new-project.cjs <name> [--workspace <research-directory>]
 const fs = require('node:fs');
 const path = require('node:path');
 
-const root = path.resolve(__dirname, '..');
-const name = process.argv[2];
-if (!name || !/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(name)) {
-  console.error('Usage: node scripts/new-project.cjs <project-name>');
-  console.error('       (letters, digits, "-" and "_" only, e.g. seminar_2027_ss)');
-  process.exit(1);
-}
-
+const root = fs.realpathSync(path.resolve(__dirname, '..'));
 const talks = path.join(root, 'talks');
-const dir = path.join(talks, name);
-if (fs.existsSync(dir)) {
-  console.error(`Already exists; no files changed: ${dir}`);
-  process.exit(1);
+const theme = path.join(root, 'themes', 'seminar.css');
+
+function reference(from, to) {
+  const relative = path.relative(from, to).split(path.sep).join('/');
+  return relative.startsWith('.') || path.isAbsolute(relative) ? relative : './' + relative;
 }
 
-// A personal template in talks/template.md (your name, lab, ...) wins over the shared one.
-const personal = path.join(talks, 'template.md');
-const template = fs.existsSync(personal) ? personal : path.join(root, 'templates', 'slide.md');
-
-fs.mkdirSync(path.join(dir, '.vscode'), { recursive: true });
-fs.copyFileSync(template, path.join(dir, 'slide.md'));
-if (template === personal) {
-  // The personal template does not use the sample figure; start with an empty list.
-  fs.mkdirSync(path.join(dir, 'figure'));
-  fs.writeFileSync(path.join(dir, 'figure', 'README.md'),
-    '# Figures\n\nList each image here with its source (paper, page, figure number) and where it is used.\n');
-} else {
-  // The shared template is also the sample deck; copy the image it uses.
-  fs.cpSync(path.join(root, 'templates', 'figure'), path.join(dir, 'figure'), { recursive: true });
+function inside(parent, child) {
+  const rel = path.relative(parent, child);
+  return rel === '' || !(rel === '..' || rel.startsWith('..' + path.sep) || path.isAbsolute(rel));
 }
-fs.writeFileSync(path.join(dir, 'marp.config.cjs'),
-  "// Delegate to the shared configuration; do not duplicate options here.\nmodule.exports = require('../../marp.config.cjs');\n");
-fs.writeFileSync(path.join(dir, '.vscode', 'settings.json'), JSON.stringify({
-  'markdown.marp.themes': ['../../themes/seminar.css'],
-  'markdown.marp.html': 'all',
-}, null, 2) + '\n');
 
-console.log(`Created ${path.relative(root, dir)} (template: ${path.relative(root, template)})`);
+function create(args) {
+  const [name, flag, location] = args;
+  if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(name || '') ||
+      !(args.length === 1 || (args.length === 3 && flag === '--workspace' && location))) {
+    throw new Error('Usage: node scripts/new-project.cjs <name> [--workspace <research-directory>]\nName: letters, digits, "-" and "_", starting with a letter or digit.');
+  }
+  const workspace = location && fs.realpathSync(location);
+  const parent = workspace ? path.join(workspace, 'slides') : talks;
+  if (workspace && (inside(root, workspace) || (fs.existsSync(parent) && fs.realpathSync(parent) !== parent))) {
+    throw new Error('Use a research workspace outside the Marp repository with a local slides/ directory.');
+  }
+  const personal = path.join(talks, 'template.md');
+  const usePersonal = !workspace && fs.existsSync(personal);
+  const template = usePersonal ? personal : path.join(root, 'templates', 'slide.md');
+  const dir = path.join(parent, name);
+  fs.mkdirSync(parent, { recursive: true });
+  fs.mkdirSync(dir); // Exclusive creation also protects existing decks on concurrent runs.
+  try {
+    fs.copyFileSync(template, path.join(dir, 'slide.md'));
+    const figure = path.join(dir, 'figure');
+    if (usePersonal) {
+      fs.mkdirSync(figure);
+      fs.writeFileSync(path.join(figure, 'README.md'),
+        '# Figures\n\nList each image here with its source (paper, page, figure number) and where it is used.\n');
+    } else {
+      fs.cpSync(path.join(root, 'templates', 'figure'), figure, { recursive: true });
+    }
+
+    const config = reference(dir, path.join(root, 'marp.config.cjs'));
+    const select = workspace ? '.forDeck(__dirname)' : '';
+    fs.writeFileSync(path.join(dir, 'marp.config.cjs'), `module.exports = require(${JSON.stringify(config)})${select};\n`);
+    const editorDir = path.join(dir, '.vscode');
+    fs.mkdirSync(editorDir);
+    fs.symlinkSync(reference(editorDir, theme), path.join(editorDir, 'seminar.css'), 'file');
+    fs.writeFileSync(path.join(dir, '.vscode', 'settings.json'), JSON.stringify({
+      'markdown.marp.themes': ['./.vscode/seminar.css'],
+      'markdown.marp.html': 'all',
+    }, null, 2) + '\n');
+
+    if (workspace) require('./workspace-settings.cjs').registerTheme(workspace, theme);
+  } catch (error) {
+    fs.rmSync(dir, { recursive: true, force: true });
+    throw error;
+  }
+  console.log(`Created ${dir}`);
+}
+
+try {
+  create(process.argv.slice(2));
+} catch (error) {
+  console.error(error.message);
+  process.exitCode = 1;
+}

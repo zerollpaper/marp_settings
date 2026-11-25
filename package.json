@@ -9,5 +9,8 @@
   },
   "devDependencies": {
     "@marp-team/marp-cli": "latest"
+  },
+  "dependencies": {
+    "jsonc-parser": "^3.3.1"
   }
 }
