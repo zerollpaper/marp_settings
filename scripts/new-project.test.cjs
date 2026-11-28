@@ -43,3 +43,19 @@ test('external decks register workspace-local links and preserve existing settin
   assert.equal(fs.readFileSync(path.join(deck, 'slide.md'), 'utf8'), '編集済み');
   assert.equal(fs.readFileSync(settings, 'utf8'), saved);
 });
+
+test('--flat creates the deck directly in the workspace and uses its template.md', t => {
+  const root = path.resolve(__dirname, '..');
+  const series = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'marp 輪講-')));
+  t.after(() => fs.rmSync(series, { recursive: true, force: true }));
+  fs.writeFileSync(path.join(series, 'template.md'), '---\nmarp: true\ntheme: seminar\n---\n\n# 自分のひな形\n');
+  const result = spawnSync(process.execPath, [path.join(__dirname, 'new-project.cjs'), 'talk_1', '--workspace', '.', '--flat'],
+    { cwd: series, encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr);
+  const deck = path.join(series, 'talk_1');
+  assert.equal(fs.readFileSync(path.join(deck, 'slide.md'), 'utf8'), fs.readFileSync(path.join(series, 'template.md'), 'utf8'));
+  assert.ok(fs.existsSync(path.join(deck, 'figure', 'README.md')));
+  assert.ok(!fs.existsSync(path.join(series, 'slides')));
+  assert.deepEqual(require(path.join(deck, 'marp.config.cjs')).themeSet, [path.join(root, 'themes', 'seminar.css')]);
+  assert.equal(fs.realpathSync(path.join(series, '.vscode', 'seminar.css')), path.join(root, 'themes', 'seminar.css'));
+});

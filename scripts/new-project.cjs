@@ -1,4 +1,7 @@
-// Usage: node scripts/new-project.cjs <name> [--workspace <research-directory>]
+// Usage: node scripts/new-project.cjs <name> [--workspace <directory> [--flat]]
+//   --workspace: create the deck in <directory>/slides/<name> (a research project outside this repository).
+//   --flat:      create it directly in <directory>/<name> (a folder that holds only decks, such as a seminar series).
+//                A template.md in that directory is used as the starter deck when present.
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -17,18 +20,20 @@ function inside(parent, child) {
 }
 
 function create(args) {
-  const [name, flag, location] = args;
+  const [name, flag, location, extra] = args;
+  const flat = extra === '--flat';
   if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(name || '') ||
-      !(args.length === 1 || (args.length === 3 && flag === '--workspace' && location))) {
-    throw new Error('Usage: node scripts/new-project.cjs <name> [--workspace <research-directory>]\nName: letters, digits, "-" and "_", starting with a letter or digit.');
+      !(args.length === 1 || (args.length === 3 && flag === '--workspace' && location) ||
+        (args.length === 4 && flag === '--workspace' && location && flat))) {
+    throw new Error('Usage: node scripts/new-project.cjs <name> [--workspace <directory> [--flat]]\nName: letters, digits, "-" and "_", starting with a letter or digit.');
   }
   const workspace = location && fs.realpathSync(location);
-  const parent = workspace ? path.join(workspace, 'slides') : talks;
+  const parent = workspace ? (flat ? workspace : path.join(workspace, 'slides')) : talks;
   if (workspace && (inside(root, workspace) || (fs.existsSync(parent) && fs.realpathSync(parent) !== parent))) {
     throw new Error('Use a research workspace outside the Marp repository with a local slides/ directory.');
   }
-  const personal = path.join(talks, 'template.md');
-  const usePersonal = !workspace && fs.existsSync(personal);
+  const personal = flat ? path.join(workspace, 'template.md') : path.join(talks, 'template.md');
+  const usePersonal = (!workspace || flat) && fs.existsSync(personal);
   const template = usePersonal ? personal : path.join(root, 'templates', 'slide.md');
   const dir = path.join(parent, name);
   fs.mkdirSync(parent, { recursive: true });
