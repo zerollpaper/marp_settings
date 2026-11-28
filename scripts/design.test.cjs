@@ -19,7 +19,24 @@ test('every CSS variable named in DESIGN.md is defined in the theme', () => {
   assert.deepEqual(missing, []);
 });
 
-test('every emphasis class in DESIGN.md is styled in the theme', () => {
+test('every emphasis and page class in DESIGN.md is styled in the theme', () => {
+  for (const name of ['accent', 'box', 'panel']) {
+    assert.ok(design.includes(`class="${name}"`), name);
+    assert.match(css, new RegExp(`\\.${name}\\b`), name);
+  }
+  for (const name of ['outline', 'section']) {
+    assert.ok(design.includes(`\`${name}\``), name);
+    assert.match(css, new RegExp(`section\\.${name}\\b|&\\.${name}\\b`), name);
+  }
+});
+
+test('the outline and chapter label rules in DESIGN.md match the theme', () => {
+  assert.match(design, /<!-- header: /);
+  assert.match(css, /section > header/);
+  assert.match(css, /section\.section > ol:has\(strong\)/);
+});
+
+test('emphasis classes keep their documented markup', () => {
   for (const name of ['accent', 'box', 'panel']) {
     assert.ok(design.includes(`class="${name}"`), name);
     assert.match(css, new RegExp(`\\.${name}\\b`), name);

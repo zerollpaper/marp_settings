@@ -305,11 +305,12 @@ section {
         padding: 30px 60px 0 60px;
     }
 
-    &:not(.no-header):not(.title):not(.section):has(> h1:first-child) {
+    /* 章の名前（header）があると Marp がそれを先頭に置くので、その次のタイトルも同じに扱う */
+    &:not(.no-header):not(.title):not(.section):has(> h1:first-child, > header:first-child + h1) {
         padding-top: 0;
     }
 
-    &:not(.no-header):not(.title):not(.section)>h1:first-child {
+    &:not(.no-header):not(.title):not(.section) > :is(h1:first-child, header:first-child + h1) {
         /* Keep inline emphasis and math in the title's normal text flow. */
         box-sizing: border-box;
         flex: none;
@@ -634,4 +635,65 @@ section.refs.refs-compact p {
 .two-col-block > .box,
 .two-col-block > .panel {
   margin: 0;
+}
+
+/* 6. 目次と章扉と章の名前（DESIGN.md の5章） */
+
+/* 目次のページ（outline）と、目次を置いた章扉：番号付きの箇条書きを大きめに */
+section.outline > ol,
+section.section > ol {
+  font-size: var(--font-size-medium);
+  line-height: var(--line-height-normal);
+  margin: 0 0 0 48px;
+
+  > li {
+    padding-top: 18px;
+
+    &:first-child {
+      padding-top: 0;
+    }
+
+    &::marker {
+      font-weight: 600;
+    }
+  }
+}
+
+/* 章扉：今の章（**…**）だけ紺の太字にし、ほかの章は薄くする */
+section.section > ol:has(strong) > li:not(:has(strong)),
+section.section > ol:has(strong) > li:not(:has(strong)) * {
+  color: var(--gray-lightest);
+}
+
+section.section > ol li strong,
+section.section > ol > li:has(strong)::marker {
+  color: var(--navy);
+}
+
+/* 章の名前（章の頭に <!-- header: … --> を書くと、その章のページに出る）：左下のページ番号の右に小さく */
+section > header {
+  top: auto;
+  bottom: 15px;
+  left: 66px;
+  right: auto;
+  height: auto;
+  padding: 0;
+  line-height: normal;
+  max-width: 320px;
+  font-size: var(--font-size-caption);
+  color: var(--gray-lightest);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+section.title > header,
+section.section > header,
+section.outline > header {
+  display: none;
+}
+
+/* 章の名前があるページでは、右下の出典が重ならないよう幅を狭める */
+section:has(> header) .source {
+  max-width: calc(100% - 440px);
 }

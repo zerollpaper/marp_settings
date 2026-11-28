@@ -164,10 +164,13 @@ cd slides/convergence
 | クラス | 用途 |
 |---|---|
 | `title cover` | 白背景の表紙 |
+| `outline` | 目次 |
 | `section` | 章扉 |
 | `no-header` | 上部ヘッダーなし |
 | `small-text` | 文字を小さくする |
 | `refs` | Referencesページ |
+
+長めの発表では、表紙の次に目次（`outline`）を置き、各章の頭の章扉（`section`）に同じ箇条書きを写して今の章だけを `**…**` で囲みます。章扉に `<!-- header: 2. Results -->` と書くと、その章のページの左下に章の名前が出ます。使いどころは [`DESIGN.md`](DESIGN.md) の「目次と章扉」を見てください。
 
 2段組の例です。**HTMLとMarkdownの間に空行を入れます。**
 

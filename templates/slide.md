@@ -36,6 +36,35 @@ Japanese notes:
 -->
 
 ---
+<!-- _class: outline -->
+
+# Outline
+
+1. Basics
+2. Layouts
+3. Emphasis
+
+<!--
+Japanese notes:
+目次のページ（outline）。3章以上ある、またはおよそ15枚を超える発表で使う。短い進捗報告では付けない。
+各章の頭の章扉に同じ箇条書きを写し、今の章だけを **…** で囲む（ほかの章は自動で薄くなる）。
+-->
+
+---
+<!-- _class: section -->
+<!-- header: 1. Basics -->
+
+1. **Basics**
+2. Layouts
+3. Emphasis
+
+<!--
+Japanese notes:
+章扉（section）。目次と同じ箇条書きで、今の章を **…** にする。
+章扉の先頭の header: 1. Basics の行（HTML コメントで書く）で、その章のページの左下（ページ番号の右）に章の名前が出る。最後の参考文献のページで header を空にして消す。
+-->
+
+---
 
 # Bullet Points and Sources
 
@@ -54,10 +83,24 @@ Japanese notes:
 出典は右下に小さく出る。論文のどこから取ったかを毎ページ書いておくと質疑で困らない。
 -->
 
+
+---
+
+# Equations
+
+The time-ordered evolution operator:
+
+$$U(T)=\mathcal T\exp\!\left[-i\int_0^T H(t)\,dt\right]$$
+
+Inline math also works: $\Delta t = T/N$.
+
 ---
 <!-- _class: section -->
+<!-- header: 2. Layouts -->
 
-# Part 1: Layouts
+1. Basics
+2. **Layouts**
+3. Emphasis
 
 ---
 
@@ -84,14 +127,28 @@ HTMLの div と Markdown の間には必ず空行を入れる（入れないとM
 -->
 
 ---
+<!-- _class: small-text -->
 
-# Equations
+# Tables and Small Text
 
-The time-ordered evolution operator:
+`small-text` shrinks every font size on this page.
 
-$$U(T)=\mathcal T\exp\!\left[-i\int_0^T H(t)\,dt\right]$$
+| Class | Use |
+|---|---|
+| `title cover` | Cover page |
+| `outline` | Table of contents |
+| `section` | Section divider |
+| `no-header` | No top header |
+| `small-text` | Dense pages |
+| `refs` | References |
 
-Inline math also works: $\Delta t = T/N$.
+---
+<!-- _class: section -->
+<!-- header: 3. Emphasis -->
+
+1. Basics
+2. Layouts
+3. **Emphasis**
 
 ---
 
@@ -149,22 +206,8 @@ Japanese notes:
 -->
 
 ---
-<!-- _class: small-text -->
-
-# Tables and Small Text
-
-`small-text` shrinks every font size on this page.
-
-| Class | Use |
-|---|---|
-| `title cover` | Cover page |
-| `section` | Section divider |
-| `no-header` | No top header |
-| `small-text` | Dense pages |
-| `refs` | References |
-
----
 <!-- _class: refs -->
+<!-- header: "" -->
 
 # References
 
