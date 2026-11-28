@@ -59,3 +59,15 @@ test('--flat creates the deck directly in the workspace and uses its template.md
   assert.deepEqual(require(path.join(deck, 'marp.config.cjs')).themeSet, [path.join(root, 'themes', 'seminar.css')]);
   assert.equal(fs.realpathSync(path.join(series, '.vscode', 'seminar.css')), path.join(root, 'themes', 'seminar.css'));
 });
+
+test('a deck is never created inside this repository', () => {
+  const root = path.resolve(__dirname, '..');
+  const result = spawnSync(process.execPath, [path.join(__dirname, 'new-project.cjs'), 'inside'], { cwd: root, encoding: 'utf8' });
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /--workspace/);
+  assert.ok(!fs.existsSync(path.join(root, 'talks')));
+  const nested = spawnSync(process.execPath, [path.join(__dirname, 'new-project.cjs'), 'inside', '--workspace', '.', '--flat'],
+    { cwd: path.join(root, 'templates'), encoding: 'utf8' });
+  assert.notEqual(nested.status, 0);
+  assert.ok(!fs.existsSync(path.join(root, 'templates', 'inside')));
+});

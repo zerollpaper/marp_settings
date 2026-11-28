@@ -2,7 +2,7 @@
   "name": "marp-settings",
   "version": "1.0.0",
   "private": true,
-  "description": "Marp workspace with a shared seminar theme, per-talk folders, and AI agent rules",
+  "description": "Shared Marp seminar theme, starter deck, and a script that creates decks in your own folders",
   "license": "MIT",
   "scripts": {
     "new": "node scripts/new-project.cjs"

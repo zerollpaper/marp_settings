@@ -1,12 +1,12 @@
-// Usage: node scripts/new-project.cjs <name> [--workspace <directory> [--flat]]
+// Usage: node scripts/new-project.cjs <name> --workspace <directory> [--flat]
 //   --workspace: create the deck in <directory>/slides/<name> (a research project outside this repository).
 //   --flat:      create it directly in <directory>/<name> (a folder that holds only decks, such as a seminar series).
 //                A template.md in that directory is used as the starter deck when present.
+// Decks always live outside this repository; it holds only the shared theme, template and scripts.
 const fs = require('node:fs');
 const path = require('node:path');
 
 const root = fs.realpathSync(path.resolve(__dirname, '..'));
-const talks = path.join(root, 'talks');
 const theme = path.join(root, 'themes', 'seminar.css');
 
 function reference(from, to) {
@@ -23,17 +23,17 @@ function create(args) {
   const [name, flag, location, extra] = args;
   const flat = extra === '--flat';
   if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(name || '') ||
-      !(args.length === 1 || (args.length === 3 && flag === '--workspace' && location) ||
+      !((args.length === 3 && flag === '--workspace' && location) ||
         (args.length === 4 && flag === '--workspace' && location && flat))) {
-    throw new Error('Usage: node scripts/new-project.cjs <name> [--workspace <directory> [--flat]]\nName: letters, digits, "-" and "_", starting with a letter or digit.');
+    throw new Error('Usage: node scripts/new-project.cjs <name> --workspace <directory> [--flat]\nName: letters, digits, "-" and "_", starting with a letter or digit.');
   }
-  const workspace = location && fs.realpathSync(location);
-  const parent = workspace ? (flat ? workspace : path.join(workspace, 'slides')) : talks;
-  if (workspace && (inside(root, workspace) || (fs.existsSync(parent) && fs.realpathSync(parent) !== parent))) {
-    throw new Error('Use a research workspace outside the Marp repository with a local slides/ directory.');
+  const workspace = fs.realpathSync(location);
+  const parent = flat ? workspace : path.join(workspace, 'slides');
+  if (inside(root, workspace) || (fs.existsSync(parent) && fs.realpathSync(parent) !== parent)) {
+    throw new Error('Use a folder outside the Marp repository (with a local slides/ directory unless --flat).');
   }
-  const personal = flat ? path.join(workspace, 'template.md') : path.join(talks, 'template.md');
-  const usePersonal = (!workspace || flat) && fs.existsSync(personal);
+  const personal = path.join(workspace, 'template.md');
+  const usePersonal = flat && fs.existsSync(personal);
   const template = usePersonal ? personal : path.join(root, 'templates', 'slide.md');
   const dir = path.join(parent, name);
   fs.mkdirSync(parent, { recursive: true });
@@ -50,8 +50,7 @@ function create(args) {
     }
 
     const config = reference(dir, path.join(root, 'marp.config.cjs'));
-    const select = workspace ? '.forDeck(__dirname)' : '';
-    fs.writeFileSync(path.join(dir, 'marp.config.cjs'), `module.exports = require(${JSON.stringify(config)})${select};\n`);
+    fs.writeFileSync(path.join(dir, 'marp.config.cjs'), `module.exports = require(${JSON.stringify(config)}).forDeck(__dirname);\n`);
     const editorDir = path.join(dir, '.vscode');
     fs.mkdirSync(editorDir);
     fs.symlinkSync(reference(editorDir, theme), path.join(editorDir, 'seminar.css'), 'file');
@@ -60,7 +59,7 @@ function create(args) {
       'markdown.marp.html': 'all',
     }, null, 2) + '\n');
 
-    if (workspace) require('./workspace-settings.cjs').registerTheme(workspace, theme);
+    require('./workspace-settings.cjs').registerTheme(workspace, theme);
   } catch (error) {
     fs.rmSync(dir, { recursive: true, force: true });
     throw error;

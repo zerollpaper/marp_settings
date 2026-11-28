@@ -1,19 +1,8 @@
 const fs = require('node:fs');
 const path = require('node:path');
 
-// Folders whose immediate subdirectories are presentation projects.
-const PROJECT_ROOTS = ['talks'];
-
-// A project may add its own theme as <project>/theme.css; register all of them.
-// Absolute paths keep the themes available from the root or any project.
-const projectThemes = PROJECT_ROOTS
-  .map(root => path.join(__dirname, root))
-  .filter(dir => fs.existsSync(dir))
-  .flatMap(dir => fs.readdirSync(dir, { withFileTypes: true })
-    .filter(entry => entry.isDirectory() && !entry.name.startsWith('.'))
-    .map(entry => path.join(dir, entry.name, 'theme.css')))
-  .filter(file => fs.existsSync(file));
-
+// Shared CLI options. Decks live outside this repository and load this file
+// through their own marp.config.cjs: require('<path>/marp.config.cjs').forDeck(__dirname).
 function configuration(projectThemes) {
   return {
     themeSet: [path.join(__dirname, 'themes', 'seminar.css'), ...projectThemes],
@@ -23,8 +12,10 @@ function configuration(projectThemes) {
   };
 }
 
-module.exports = configuration(projectThemes);
-// Provide an external deck's config without exposing a new option to Marp CLI.
+// Running marp in this directory (for example on templates/slide.md) uses the shared theme only.
+module.exports = configuration([]);
+// A deck may add its own theme as <deck>/theme.css; forDeck registers it.
+// Non-enumerable, so Marp CLI does not see it as an option.
 Object.defineProperty(module.exports, 'forDeck', {
   value(dir) {
     const theme = path.join(dir, 'theme.css');

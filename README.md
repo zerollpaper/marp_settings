@@ -2,6 +2,7 @@
 
 Markdownで研究室ゼミ・論文紹介のスライドを作るためのテンプレートです。
 [Marp](https://marp.app/) を使い、全発表の見た目を共通テーマ `themes/seminar.css` で揃えます。
+このリポジトリには共通のテーマ・ひな形・スクリプトだけを置き、発表は自分のフォルダ（研究プロジェクトやゼミの発表をまとめたフォルダ）に作ります。
 発表ごとにフォルダを分け、`slide.md`（本文＋原稿＋メモ）と `figure/`（画像）だけを編集すれば済むようにしてあります。
 AIエージェント（Claude Code、Codexなど）に編集を任せるためのルール `AGENTS.md` も同梱しています。
 
@@ -39,86 +40,75 @@ Markdownファイルを、そのままスライド（PDF・HTML・PowerPoint）�
 ### 1-2. このリポジトリを取得してMarp CLIを入れる
 
 ```sh
-git clone https://github.com/zerollpaper/marp-settings.git marp
-cd marp
+git clone https://github.com/zerollpaper/marp-settings.git
+cd marp-settings
 npm install
 ```
 
-`npm install` で、このフォルダ専用のMarp CLIが入ります。以降は `npx marp ...` で使えます。
+`npm install` で、このリポジトリ専用のMarp CLI（`node_modules/.bin/marp`）と、新規作成スクリプトが使う部品が入ります。
 バージョンは固定しておらず、常に最新版が入ります。あとから最新版に更新したいときは `npm install @marp-team/marp-cli@latest` を実行してください。
-どこでも `marp` と打ちたい場合は、代わりにグローバルに入れても構いません（以下、`marp` と書いたところは `npx marp` と読み替えてください）。
+どこでも `marp` と打ちたい場合は、グローバルにも入れておくと便利です（以下、`marp` と書いたところは、入れていなければ `/path/to/marp-settings/node_modules/.bin/marp` と読み替えてください）。
 
 ```sh
 npm install -g @marp-team/marp-cli   # または macOS なら brew install marp-cli
 marp --version
 ```
 
-### 1-3. VS Codeで開く
-
-VS Codeで `marp` フォルダ（または発表フォルダ）を開きます。
-「このフォルダの作成者を信頼しますか？」と聞かれたら **信頼する** を選んでください。
-信頼しないと、共通テーマやHTML（2段組など）がプレビューに反映されません。
-
-`templates/slide.md` を開き、右上のプレビューボタン（虫眼鏡付きの分割アイコン）でスライドが表示されれば準備完了です。
+以下、このリポジトリを取得した場所を `/path/to/marp-settings` と書きます。
 
 ---
 
 ## 2. 新しい発表を始める
 
-```sh
-node scripts/new-project.cjs seminar-2027-ss
-# または npm run new -- seminar-2027-ss
-```
-
-`talks/seminar-2027-ss/` に `slide.md`（`templates/slide.md` のコピー）、`figure/`、CLIとVS Codeの設定が作られます。
-`slide.md` は全レイアウトの見本を兼ねているので、使わないページは消して書き換えてください。既存のフォルダは上書きしません。
+発表はこのリポジトリの外に作ります。作る場所に合わせて2通りあります。どちらも既存の発表は上書きせず、このリポジトリの中には作りません。
 空フォルダを手で作ると設定が揃わないので、必ずこのスクリプトを使ってください（AIにもそう指示してあります）。
 
-AIに頼む場合の例：
+### 研究プロジェクトの中に作る（`--workspace`）
 
-> `AGENTS.md` を読んで、`seminar-2027-ss` という新しい発表フォルダを作って。
-> 共通テーマを使い、英語スライド・英語原稿・日本語ノートで準備して。
-
-### 研究プロジェクト内に発表を作る
-
-研究プロジェクトのルートから、取得した共通リポジトリのスクリプトに `--workspace .` を付けます。最初に共通リポジトリで `npm install` を実行してください。研究側に npm パッケージを入れる必要はありません。
+研究プロジェクトのルートをカレントディレクトリにして、`--workspace .` を付けて実行します。研究側に npm パッケージを入れる必要はありません。
 
 ```sh
-# 研究プロジェクトをカレントディレクトリにして実行
-node /path/to/marp/scripts/new-project.cjs convergence --workspace .
+node /path/to/marp-settings/scripts/new-project.cjs convergence --workspace .
 cd slides/convergence
 marp slide.md --pdf
 ```
 
-`slides/convergence/` に公開テンプレートから原稿と図を作ります。個人用の `talks/template.md` は従来の `talks/` 用です。既存の発表名で再実行すると作成を中止します。
+`slides/convergence/` に、`slide.md`（`templates/slide.md` のコピー）、`figure/`、CLIとVS Codeの設定が作られます。
+`slide.md` は全レイアウトの見本を兼ねているので、使わないページは消して書き換えてください。
 
-VS Code は研究プロジェクトのルート、または発表フォルダを開き、`slide.md` を開き、コマンドパレットから **Markdown: プレビューを横に表示** を選びます。Markdown Preview Enhanced を併用している環境でもこのコマンドで Marp が動きます。生成時に各フォルダの `.vscode/seminar.css` を共通 CSS へのシンボリックリンクとして作り、拡張が読めるワークスペース内のパスを登録します。Windows ではファイルのシンボリックリンクを作れる環境が必要です。研究側の既存テーマ・ほかの設定・コメントは保持し、HTML の設定は共通レイアウト用の `all` にします。後からチェックアウト先を移す場合は、両者の相対配置を保つか、CLI の参照先とテーマのリンク先を更新してください。
+### 発表だけを並べるフォルダに作る（`--flat`）
 
-ゼミの連続発表のように、発表だけを並べるフォルダ（このリポジトリの外）に直接作る場合は `--flat` を付けます。`slides/` を挟まずに `<フォルダ>/<発表名>/` に作り、そのフォルダに `template.md` があればひな形として使います。
+ゼミの連続発表のように、発表だけを並べるフォルダに作る場合は `--flat` を付けます。`slides/` を挟まずに `<フォルダ>/<発表名>/` に作ります。
 
 ```sh
 # 発表を並べるフォルダをカレントディレクトリにして実行
-node /path/to/marp/scripts/new-project.cjs seminar-2027-ss --workspace . --flat
+node /path/to/marp-settings/scripts/new-project.cjs seminar-2027-ss --workspace . --flat
 ```
 
-CLI を共通リポジトリだけにインストールした場合は、発表フォルダから `/path/to/marp/node_modules/.bin/marp slide.md --pdf` を使えます。研究プロジェクト側で管理するのは発表とその設定です。CSS の編集先は共通の `themes/seminar.css` です。
-
-### 自分の名前・研究室を毎回入れたくない
-
-`talks/template.md` に自分用のひな形（名前・研究室入り、不要な見本ページを削ったものなど）を置いておくと、
-以降の新規作成ではそちらが使われます（`talks/` は公開されないので個人情報を書いても大丈夫です）。
-
-### `talks/` について
-
-`talks/` は `.gitignore` で除外してあるので、このリポジトリを更新・公開しても自分の発表は混ざりません。
-発表もgitで管理したい場合は、`talks/` の中で別に `git init` して、**非公開リポジトリ**として push してください。
+そのフォルダに `template.md` を置いておくと、ひな形としてそちらが使われます（自分の名前・研究室入り、不要な見本ページを削ったものなど）。
+このフォルダごと別の非公開リポジトリにしておけば、発表も git で管理できます。
 
 ```text
-marp/            このリポジトリ（テーマ・設定・スクリプト）
-└── talks/       自分の発表（ここだけ別の非公開リポジトリにできる）
+marp-settings/      このリポジトリ（テーマ・ひな形・スクリプト。公開）
+seminar/            自分の発表を並べるフォルダ（非公開リポジトリにできる）
+├── template.md     自分用のひな形（任意）
+└── seminar-2027-ss/
 ```
 
-テンプレート側の更新は `marp/` で `git pull` するだけで取り込めます。
+テンプレート側の更新は `marp-settings/` で `git pull` するだけで取り込めます。
+
+AIに頼む場合の例：
+
+> `/path/to/marp-settings/AGENTS.md` を読んで、このフォルダに `seminar-2027-ss` という新しい発表を `--flat` で作って。
+> 共通テーマを使い、英語スライド・英語原稿・日本語ノートで準備して。
+
+### VS Code で開く
+
+VS Code で研究プロジェクト（発表を並べるフォルダ）か発表フォルダを開き、`slide.md` を開いて、コマンドパレットから **Markdown: プレビューを横に表示** を選びます。Markdown Preview Enhanced を併用している環境でもこのコマンドで Marp が動きます。
+「このフォルダの作成者を信頼しますか？」と聞かれたら **信頼する** を選んでください。信頼しないと、共通テーマやHTML（2段組など）がプレビューに反映されません。
+
+拡張は開いたフォルダの中のテーマしか読めないので、スクリプトは発表フォルダとその親（研究プロジェクト・発表を並べるフォルダ）の両方に、共通テーマへのシンボリックリンク `.vscode/seminar.css` を作り、`.vscode/settings.json` に登録します。親の既存の設定・ほかのテーマ・コメントは保持し、HTML の設定は共通レイアウト用の `all` にします。Windows ではファイルのシンボリックリンクを作れる環境が必要です。
+後からこのリポジトリや発表の場所を移した場合は、発表の `marp.config.cjs` の参照先と、`.vscode/seminar.css` のリンク先を直してください。
 
 ---
 
@@ -152,7 +142,7 @@ Japanese notes:
 ターミナルで発表フォルダに移動して実行します。
 
 ```sh
-cd talks/seminar-2027-ss
+cd slides/convergence
 ```
 
 | やりたいこと | コマンド |
@@ -164,8 +154,6 @@ cd talks/seminar-2027-ss
 
 出力は同じフォルダに保存されます（`slide.pdf` など）。監視中のCLIは `Ctrl+C` で終了します。
 **`--config-file` の指定は不要です。** VS Codeからは、コマンドパレットの「Marp: Export Slide Deck...」でも出力できます。
-
-リポジトリ直下から実行する場合はパスを付けます：`marp talks/seminar-2027-ss/slide.md --pdf`
 
 ---
 
@@ -206,64 +194,65 @@ cd talks/seminar-2027-ss
 |---|---|
 | 発表内容・論文名・著者名 | 各発表の `slide.md` |
 | 全発表共通の文字・色・配置 | `themes/seminar.css` |
-| 新しい発表の初期原稿・見本 | `templates/slide.md`（個人用は `talks/template.md`） |
-| CLIの出力設定 | 直下の `marp.config.cjs` |
+| 新しい発表の初期原稿・見本 | `templates/slide.md`（`--flat` では発表を並べるフォルダの `template.md` も使える） |
+| CLIの出力設定 | このリポジトリの `marp.config.cjs` |
 
-今回だけの例外が必要なときは、発表フォルダに `theme.css` を追加します。
-固有のテーマ名（`/* @theme my-talk */`）を付けて `@import "seminar";` し、原稿の `theme:` と、直下・発表フォルダ両方の `.vscode/settings.json` に登録します。
-CLIは従来のワークスペースでは `talks/*/theme.css`、外部の発表フォルダで実行するときはそのフォルダの `theme.css` を登録します。
+その発表だけの見た目が必要なときは、発表フォルダに `theme.css` を追加します。
+固有のテーマ名（`/* @theme my-talk */`）を付けて `@import "seminar";` し、原稿の `theme:` で選び、VS Code 用に発表フォルダの `.vscode/settings.json` にも登録します。CLI は発表フォルダの `theme.css` を自動で登録します。
+1枚だけの調整は、原稿にそのページだけに効く `<style scoped>` を数行まで書けます。原稿の先頭の `style:` や、scoped でない `<style>` は使わないでください（見た目が原稿のあちこちに散らばるため）。
 
 ---
 
 ## 7. フォルダ構成と設定ファイルの仕組み
 
 ```text
-marp/
+marp-settings/
 ├── README.md                  この説明
 ├── AGENTS.md                  AI向けの作業ルール（本体）
 ├── CLAUDE.md                  Claude Code用（中身は @AGENTS.md の1行）
 ├── package.json               npm install で Marp CLI を入れる
 ├── marp.config.cjs            CLI設定の本体（ここだけで管理）
-├── .vscode/settings.json      直下を開いたときのテーマ登録
 ├── themes/seminar.css         全発表共通の見た目
 ├── templates/                 新しい発表のひな形（全レイアウトの見本を兼ねる）
 │   ├── slide.md
 │   └── figure/                見本で使う画像と出典メモ
-├── scripts/new-project.cjs    発表フォルダの作成
-└── talks/                     自分の発表（git管理外）
-    └── seminar-2027-ss/
-        ├── slide.md               発表内容・原稿・ノート
-        ├── figure/                画像（＋出典メモ README.md）
-        ├── marp.config.cjs        直下の設定を読み込むだけ
-        └── .vscode/settings.json  発表フォルダだけを開いたときのテーマ登録
+└── scripts/
+    ├── new-project.cjs        発表フォルダの作成
+    └── workspace-settings.cjs 親フォルダの VS Code の設定にテーマを登録する
+
+研究プロジェクト/
+├── .vscode/                   テーマへのリンクと登録（スクリプトが作る）
+└── slides/convergence/
+    ├── slide.md               発表内容・原稿・ノート
+    ├── figure/                画像（＋出典メモ README.md）
+    ├── marp.config.cjs        共通の設定を読み込むだけ
+    └── .vscode/               発表フォルダだけを開いたときのテーマのリンクと登録
 ```
 
-従来の `talks/<発表名>/marp.config.cjs` の例です。外部の発表では生成時に参照先を計算します。
+発表の `marp.config.cjs` は、スクリプトが参照先を計算して作ります。例：
 
 ```js
-module.exports = require('../../marp.config.cjs');
+module.exports = require("../../../marp-settings/marp.config.cjs").forDeck(__dirname);
 ```
 
 Marp CLIは親フォルダの設定を自動では探さないため、この参照ファイルを置くことで、
-発表フォルダ内で普通に `marp slide.md` と打てるようにしています。設定内容は直下に集約されているので二重管理にはなりません。
-
-VS Code側も同様で、直下を開いても発表フォルダだけを開いてもテーマが効くよう、両方に `.vscode/settings.json` があります。
-新しい発表ではスクリプトが発表側の設定とテーマのリンクを用意します。以前の発表に `../../themes/seminar.css` という設定がある場合は、共通リポジトリのルートを開くとプレビューできます。
+発表フォルダ内で普通に `marp slide.md` と打てるようにしています。設定内容はこのリポジトリに集約されているので二重管理にはなりません。
+`forDeck` は、発表フォルダに `theme.css` があればそれもテーマとして登録します。
 
 ### AI向けルール（AGENTS.md と CLAUDE.md）
 
 ルールの本体は `AGENTS.md` だけです。Codexなどは `AGENTS.md` を、Claude Codeは `CLAUDE.md` を読みます。
 `CLAUDE.md` の中身は `@AGENTS.md`（＝AGENTS.mdを読み込む指示）の1行なので、ルールを直すときは `AGENTS.md` だけを編集します。
-`talks/` に自分専用の `AGENTS.md` / `CLAUDE.md` を置けば、そのフォルダで作業するときだけ追加ルールが効きます。
+発表を置くフォルダに自分専用の `AGENTS.md` / `CLAUDE.md` を置けば、そこで作業するときだけ追加ルールが効きます。
 ルールファイルを自動で読まないAI（チャット画面など）には、`AGENTS.md` の場所を伝えてください。
 
 ---
 
 ## 8. 表示がおかしいとき
 
-- **テーマが効かない（VS Code）**：フォルダを「信頼」したか、開いているフォルダの `.vscode/settings.json` にテーマが登録されているか確認。
+- **テーマが効かない（VS Code）**：フォルダを「信頼」したか、開いているフォルダの `.vscode/settings.json` にテーマが登録され、`.vscode/seminar.css` のリンクが切れていないか確認。
 - **2段組などのHTMLが崩れる**：`markdown.marp.html` が `all` になっているか、HTMLとMarkdownの間に空行があるか確認。
-- **テーマが効かない（CLI）**：発表フォルダに `marp.config.cjs` があり、共通リポジトリの `marp.config.cjs` を参照しているか確認。
+- **テーマが効かない（CLI）**：発表フォルダに `marp.config.cjs` があり、このリポジトリの `marp.config.cjs` を参照しているか確認。
 - **原稿**：冒頭が `marp: true`、`theme: seminar` になっているか確認。
 - **PDF出力でブラウザが見つからない**：Chrome / Edge / Firefox のいずれかを入れる。
 - **フォント**：macOSはSF Pro／ヒラギノ、WindowsはSegoe UI／游ゴシック／メイリオで表示されます。
