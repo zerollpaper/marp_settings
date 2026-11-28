@@ -5,7 +5,8 @@
   "description": "Shared Marp seminar theme, starter deck, and a script that creates decks in your own folders",
   "license": "MIT",
   "scripts": {
-    "new": "node scripts/new-project.cjs"
+    "new": "node scripts/new-project.cjs",
+    "test": "node --test scripts/*.test.cjs"
   },
   "devDependencies": {
     "@marp-team/marp-cli": "latest"

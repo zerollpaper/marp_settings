@@ -2,6 +2,7 @@
 
 - This repository holds only the shared theme, the starter deck and the scripts. Decks live in the user's own folders outside it (a research project, or a folder that holds a seminar series), which may have their own `AGENTS.md`. `templates/` holds the starter deck, which doubles as the public sample of every layout; it is not a project. Work in the deck named by the user; preserve their edits, speaker scripts and notes.
 - Read `README.md` for the supported layouts and workflow.
+- Read `DESIGN.md` before writing or restyling slides: the role of each color and type size, the four kinds of emphasis and how many of each a slide may use. `DESIGN.md` holds roles and usage rules only; every value (colors, sizes, spacing, chart colors) lives in the CSS variables of `themes/seminar.css`, and `DESIGN.md` refers to them by name. Change values in the CSS only; change rules in `DESIGN.md`; add a new role to both in one commit. Do not write color or size values in `slide.md`.
 - For a deck in a research project, run `node <this repository>/scripts/new-project.cjs <name> --workspace <project>`. It creates `<project>/slides/<name>/` from the public template and registers the shared theme for both the project and the deck.
 - For a folder that holds only decks (such as a seminar series), add `--flat`: the deck is created directly as `<folder>/<name>/`, using `<folder>/template.md` when present.
 - The script refuses to create a deck inside this repository. Never overwrite an existing deck with a template, and do not create deck folders by hand.

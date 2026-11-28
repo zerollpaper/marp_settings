@@ -190,6 +190,8 @@ cd slides/convergence
 
 ## 6. 見た目を変える場所
 
+見た目の決まり（色の役割、文字の大きさ、強調の4種類と1枚に使える数）は [`DESIGN.md`](DESIGN.md) にまとめてあります。強調は `<span class="accent">`（青い文字）、`<div class="box">`（囲み枠）、`<div class="panel">`（淡い背景）で書きます。
+
 | 変更するもの | 編集する場所 |
 |---|---|
 | 発表内容・論文名・著者名 | 各発表の `slide.md` |
@@ -211,6 +213,7 @@ marp-settings/
 ├── AGENTS.md                  AI向けの作業ルール（本体）
 ├── CLAUDE.md                  Claude Code用（中身は @AGENTS.md の1行）
 ├── package.json               npm install で Marp CLI を入れる
+├── DESIGN.md                  見た目の決まり（テーマはこれを形にしたもの）
 ├── marp.config.cjs            CLI設定の本体（ここだけで管理）
 ├── themes/seminar.css         全発表共通の見た目
 ├── templates/                 新しい発表のひな形（全レイアウトの見本を兼ねる）

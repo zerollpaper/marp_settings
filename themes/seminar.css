@@ -7,14 +7,17 @@
 
 :root {
     --blue-very-deep: #2C67E5;
+    --navy: #223A70;
     --gray-darkest: #000000;
     --gray-medium: #434343;
     --gray-light: #595959;
     --gray-lightest: #999999;
+    --gray-sub: #646464;
     --white: #FFFFFF;
     --black: #000000;
     --bg-default: #FFFFFF;
     --bg-accent: #F3F3F3;
+    --bg-panel: #F1F2F4;
     --bg-accent-code: #e1e1e1;
     --border-color: #D9D9D9;
     --font-size-title: 38px;
@@ -28,6 +31,13 @@
     --line-height-normal: 1.21;
     --line-height-loose: 1.5;
     --font-family: "SF Pro", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Segoe UI", "Yu Gothic UI", "Meiryo", "Noto Sans", "Noto Sans JP", sans-serif;
+
+    /* グラフの色。図は LaTeX や Python で作るので CSS では使わないが、値の正本はここに置き、図を作るスクリプトはここから写す（役割は DESIGN.md） */
+    --chart-main: #2C67E5;
+    --chart-compare: #5B6873;
+    --chart-third: #167B72;
+    --chart-reference: #AABACB;
+    --chart-ink: #323C45;
 }
 
 section.small-text {
@@ -309,7 +319,7 @@ section {
         margin: 0 -60px 19px;
         text-wrap: balance;
         border-bottom: 1px solid var(--black);
-        color: var(--gray-medium);
+        color: var(--navy);
     }
 
     &::after {
@@ -342,6 +352,7 @@ section {
             padding-left: 0;
             font-size: calc(var(--font-size-title) * 1.5);
             margin-bottom: 0;
+            color: var(--navy);
         }
 
         h2 {
@@ -363,6 +374,7 @@ section {
 
         h1 {
             position: static;
+            color: var(--navy);
         }
 
         ::after {
@@ -449,7 +461,7 @@ section .source {
 }
 
 section .source, section .source * {
-  color: #646464;
+  color: var(--gray-sub);
 }
 
 section.title p {
@@ -473,7 +485,7 @@ section.title.cover:lang(ja) h1 {
 section.title.cover h2 {
   font-size: 27px;
   font-weight: 400;
-  color: #646464;
+  color: var(--gray-sub);
 }
 
 section.cover .cover-meta {
@@ -487,12 +499,12 @@ section.cover .cover-meta p {
 
 section.cover .cover-meta .seminar {
   font-size: 19px;
-  color: #646464;
+  color: var(--gray-sub);
 }
 
 section.cover .paper-card {
   box-sizing: border-box;
-  background: #f1f2f4;
+  background: var(--bg-panel);
   border-radius: 10px;
   padding: 22px 28px;
 }
@@ -516,7 +528,7 @@ section.cover .paper-highlight {
 
 section.cover .paper-authors {
   font-size: 16px;
-  color: #646464;
+  color: var(--gray-sub);
   line-height: 1.4;
   margin: 0;
 }
@@ -584,4 +596,42 @@ section.refs.refs-compact p {
   font-size: 16px;
   line-height: 1.25;
   margin: 0 0 14px;
+}
+
+/* 5. 強調（DESIGN.md の4章。どれも1枚の要点にだけ使う） */
+
+/* 青い文字：いちばん言いたい数字・結論（1枚に1〜2か所） */
+.accent,
+.accent * {
+  color: var(--blue-very-deep);
+  font-weight: 700;
+}
+
+/* 囲み枠：結論・定理・定義を1つ（1枚に1つまで） */
+.box,
+.panel {
+  box-sizing: border-box;
+  margin: 8px 0 14px;
+  padding: 14px 24px;
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+}
+
+.box {
+  border: 1.5px solid var(--blue-very-deep);
+  border-radius: 6px;
+}
+
+/* 淡い背景：まとまりを1つの面にまとめる（1枚に1つまで。囲み枠と同じ1枚では使わない） */
+.panel {
+  background: var(--bg-panel);
+  border-radius: 10px;
+}
+
+/* 2段組の片側に使うときは、隣の列と上端をそろえる */
+.two-col-block > .box,
+.two-col-block > .panel {
+  margin: 0;
 }
