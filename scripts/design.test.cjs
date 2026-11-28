@@ -33,7 +33,7 @@ test('every emphasis and page class in DESIGN.md is styled in the theme', () => 
 test('the outline and chapter label rules in DESIGN.md match the theme', () => {
   assert.match(design, /<!-- header: /);
   assert.match(css, /section > header/);
-  assert.match(css, /section\.section > ol:has\(strong\)/);
+  assert.match(css, /section\.outline > ol:has\(strong\)/);
 });
 
 test('emphasis classes keep their documented markup', () => {

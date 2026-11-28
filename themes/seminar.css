@@ -27,6 +27,8 @@
     --font-size-small: 22px;
     --font-size-caption: 20px;
     --font-size-note: 16px;
+    /* ページ番号と章の名前。small-text のページでも変えない */
+    --font-size-page: 20px;
     --line-height-tight: 1.15;
     --line-height-normal: 1.21;
     --line-height-loose: 1.5;
@@ -327,7 +329,7 @@ section {
         position: absolute;
         bottom: 15px;
         left: 30px;
-        font-size: var(--font-size-caption);
+        font-size: var(--font-size-page);
         color: var(--gray-lightest);
     }
 
@@ -639,15 +641,23 @@ section.refs.refs-compact p {
 
 /* 6. 目次と章扉と章の名前（DESIGN.md の5章） */
 
-/* 目次のページ（outline）と、目次を置いた章扉：番号付きの箇条書きを大きめに */
-section.outline > ol,
-section.section > ol {
+/* 目次のページ（outline）。章扉も同じページで、今の章（**…**）だけを強調する。
+   どちらも箇条書きを同じ位置・大きさに置き、章が進むと強調だけが移って見えるようにする */
+/* 上下の真ん中に置く。Marp の組み込みの section>:last-child{margin-bottom:0 !important} で余白の auto が効かないので、行で分ける */
+section.outline {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+section.outline > ol {
   font-size: var(--font-size-medium);
   line-height: var(--line-height-normal);
   margin: 0 0 0 48px;
+  align-self: center;
 
   > li {
-    padding-top: 18px;
+    padding-top: 26px;
 
     &:first-child {
       padding-top: 0;
@@ -659,14 +669,14 @@ section.section > ol {
   }
 }
 
-/* 章扉：今の章（**…**）だけ紺の太字にし、ほかの章は薄くする */
-section.section > ol:has(strong) > li:not(:has(strong)),
-section.section > ol:has(strong) > li:not(:has(strong)) * {
+/* 章扉：今の章だけ紺の太字にし、ほかの章は補助の文字の色に落とす */
+section.outline > ol:has(strong) > li:not(:has(strong)),
+section.outline > ol:has(strong) > li:not(:has(strong)) * {
   color: var(--gray-lightest);
 }
 
-section.section > ol li strong,
-section.section > ol > li:has(strong)::marker {
+section.outline > ol li strong,
+section.outline > ol > li:has(strong)::marker {
   color: var(--navy);
 }
 
@@ -680,7 +690,7 @@ section > header {
   padding: 0;
   line-height: normal;
   max-width: 320px;
-  font-size: var(--font-size-caption);
+  font-size: var(--font-size-page);
   color: var(--gray-lightest);
   white-space: nowrap;
   overflow: hidden;

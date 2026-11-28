@@ -51,8 +51,10 @@ Japanese notes:
 -->
 
 ---
-<!-- _class: section -->
+<!-- _class: outline -->
 <!-- header: 1. Basics -->
+
+# Outline
 
 1. **Basics**
 2. Layouts
@@ -60,7 +62,7 @@ Japanese notes:
 
 <!--
 Japanese notes:
-章扉（section）。目次と同じ箇条書きで、今の章を **…** にする。
+章扉は目次と同じページ（outline）で、同じタイトルと箇条書きのまま、今の章だけを **…** にする。章が進むと強調だけが移って見える。
 章扉の先頭の header: 1. Basics の行（HTML コメントで書く）で、その章のページの左下（ページ番号の右）に章の名前が出る。最後の参考文献のページで header を空にして消す。
 -->
 
@@ -95,8 +97,10 @@ $$U(T)=\mathcal T\exp\!\left[-i\int_0^T H(t)\,dt\right]$$
 Inline math also works: $\Delta t = T/N$.
 
 ---
-<!-- _class: section -->
+<!-- _class: outline -->
 <!-- header: 2. Layouts -->
+
+# Outline
 
 1. Basics
 2. **Layouts**
@@ -137,14 +141,16 @@ HTMLの div と Markdown の間には必ず空行を入れる（入れないとM
 |---|---|
 | `title cover` | Cover page |
 | `outline` | Table of contents |
-| `section` | Section divider |
+| `section` | Section divider without an outline |
 | `no-header` | No top header |
 | `small-text` | Dense pages |
 | `refs` | References |
 
 ---
-<!-- _class: section -->
+<!-- _class: outline -->
 <!-- header: 3. Emphasis -->
+
+# Outline
 
 1. Basics
 2. Layouts
