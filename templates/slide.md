@@ -95,21 +95,32 @@ Inline math also works: $\Delta t = T/N$.
 
 ---
 
-# Emphasis: Accent and Box
+# Emphasis: Bold and Accent
 
 - **Setting:** the same oracle and the same target error for both methods
 - **Result:** the new method needs <span class="accent">53% fewer</span> queries at $T=64$
 
+<!--
+Japanese notes:
+強調は DESIGN.md の4章のとおり。太字は項目の頭の見出し語、青い文字（accent）は1枚に1〜2か所。
+1枚に使う強調は2種類まで。
+-->
+
+---
+
+# Emphasis: Box
+
+Both methods use the same oracle and the same target error.
+
 <div class="box">
 
-**Theorem 1.** The query count is $O(\alpha T + \log(1/\varepsilon))$, which matches the known lower bound.
+Theorem 1. The query count is $O(\alpha T + \log(1/\varepsilon))$, which matches the known lower bound.
 
 </div>
 
 <!--
 Japanese notes:
-強調は DESIGN.md の4章のとおり。青い文字（accent）は1枚に1〜2か所、囲み枠（box）は結論・定理を1つだけ。
-囲み枠と淡い背景（panel）は同じ1枚で両方使わない。
+囲み枠（box）は結論・定理・定義を1つだけ。囲み枠と淡い背景（panel）は同じ1枚で両方使わない。
 -->
 
 ---
