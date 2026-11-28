@@ -648,6 +648,8 @@ section.outline {
   display: grid;
   grid-template-rows: auto 1fr;
   grid-template-columns: minmax(0, 1fr);
+  /* 下に余白を取り、箇条書きがページの中心より少し上（目で見た真ん中）に来るようにする */
+  padding-bottom: 150px;
 }
 
 section.outline > ol {
