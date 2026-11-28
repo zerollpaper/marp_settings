@@ -1,5 +1,5 @@
 {
-  "name": "marp_settings",
+  "name": "marp-settings",
   "version": "1.0.0",
   "private": true,
   "description": "Marp workspace with a shared seminar theme, per-talk folders, and AI agent rules",

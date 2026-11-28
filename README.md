@@ -39,7 +39,7 @@ Markdownファイルを、そのままスライド（PDF・HTML・PowerPoint）�
 ### 1-2. このリポジトリを取得してMarp CLIを入れる
 
 ```sh
-git clone https://github.com/zerollpaper/marp_settings.git marp
+git clone https://github.com/zerollpaper/marp-settings.git marp
 cd marp
 npm install
 ```
@@ -66,17 +66,17 @@ VS Codeで `marp` フォルダ（または発表フォルダ）を開きます�
 ## 2. 新しい発表を始める
 
 ```sh
-node scripts/new-project.cjs seminar_2027_ss
-# または npm run new -- seminar_2027_ss
+node scripts/new-project.cjs seminar-2027-ss
+# または npm run new -- seminar-2027-ss
 ```
 
-`talks/seminar_2027_ss/` に `slide.md`（`templates/slide.md` のコピー）、`figure/`、CLIとVS Codeの設定が作られます。
+`talks/seminar-2027-ss/` に `slide.md`（`templates/slide.md` のコピー）、`figure/`、CLIとVS Codeの設定が作られます。
 `slide.md` は全レイアウトの見本を兼ねているので、使わないページは消して書き換えてください。既存のフォルダは上書きしません。
 空フォルダを手で作ると設定が揃わないので、必ずこのスクリプトを使ってください（AIにもそう指示してあります）。
 
 AIに頼む場合の例：
 
-> `AGENTS.md` を読んで、`seminar_2027_ss` という新しい発表フォルダを作って。
+> `AGENTS.md` を読んで、`seminar-2027-ss` という新しい発表フォルダを作って。
 > 共通テーマを使い、英語スライド・英語原稿・日本語ノートで準備して。
 
 ### 研究プロジェクト内に発表を作る
@@ -98,7 +98,7 @@ VS Code は研究プロジェクトのルート、または発表フォルダを
 
 ```sh
 # 発表を並べるフォルダをカレントディレクトリにして実行
-node /path/to/marp/scripts/new-project.cjs seminar_2027_ss --workspace . --flat
+node /path/to/marp/scripts/new-project.cjs seminar-2027-ss --workspace . --flat
 ```
 
 CLI を共通リポジトリだけにインストールした場合は、発表フォルダから `/path/to/marp/node_modules/.bin/marp slide.md --pdf` を使えます。研究プロジェクト側で管理するのは発表とその設定です。CSS の編集先は共通の `themes/seminar.css` です。
@@ -152,7 +152,7 @@ Japanese notes:
 ターミナルで発表フォルダに移動して実行します。
 
 ```sh
-cd talks/seminar_2027_ss
+cd talks/seminar-2027-ss
 ```
 
 | やりたいこと | コマンド |
@@ -165,7 +165,7 @@ cd talks/seminar_2027_ss
 出力は同じフォルダに保存されます（`slide.pdf` など）。監視中のCLIは `Ctrl+C` で終了します。
 **`--config-file` の指定は不要です。** VS Codeからは、コマンドパレットの「Marp: Export Slide Deck...」でも出力できます。
 
-リポジトリ直下から実行する場合はパスを付けます：`marp talks/seminar_2027_ss/slide.md --pdf`
+リポジトリ直下から実行する場合はパスを付けます：`marp talks/seminar-2027-ss/slide.md --pdf`
 
 ---
 
@@ -231,7 +231,7 @@ marp/
 │   └── figure/                見本で使う画像と出典メモ
 ├── scripts/new-project.cjs    発表フォルダの作成
 └── talks/                     自分の発表（git管理外）
-    └── seminar_2027_ss/
+    └── seminar-2027-ss/
         ├── slide.md               発表内容・原稿・ノート
         ├── figure/                画像（＋出典メモ README.md）
         ├── marp.config.cjs        直下の設定を読み込むだけ
